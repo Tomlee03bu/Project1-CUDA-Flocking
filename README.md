@@ -53,7 +53,7 @@ We begin with a direct comparison between the naive, scattered, and coherent uni
 At higher particle counts, the naive implementation approaches very low FPS, causing the curve to appear to flatten near the bottom of the graph. A similar trend can also be observed for the scattered and coherent implementations when the particle count is increased further. However, because the naive implementation became prohibitively slow at these larger particle counts, we did not collect naive results over the same extended range.
 
 <p align="center">
-  <img src="graphs/comparison/avg_cuda_fps_block_64" alt="FPS for scattered and coherent" width="500">
+  <img src="graphs/comparison/avg_cuda_fps_block_64.png" alt="FPS for scattered and coherent" width="500">
 </p>
 
 Overall, the uniform-grid implementations scale significantly better with increasing particle count than the naive implementation because they reduce the number of boids that must be considered during each neighbor search. Between the two grid-based approaches, the coherent implementation provided the best performance, suggesting that reorganizing the boid data into a more coherent memory layout provided an additional performance benefit over retaining the original scattered layout.
@@ -83,7 +83,7 @@ Overall, block sizes of 64, 128, 256, and 512 performed relatively similarly, wh
 Although changing the block dimensions had little effect on the overall FPS of the scattered implementation, examining individual kernel timings revealed more noticeable differences.
 
 <p align="center">
-  <img src="graphs/scattered/compute_indices_ms" alt="Performance for scattered compute indicdes" width="500">
+  <img src="graphs/scattered/compute_indices_ms.png" alt="Performance for scattered compute indicdes" width="500">
 </p>
 
 For the kernel responsible for computing particle grid indices, performance varied with block size. Block sizes of 128, 256, and 512 produced the lowest execution times, while block size 64 was somewhat slower and block size 32 produced the highest execution time.
@@ -91,17 +91,17 @@ For the kernel responsible for computing particle grid indices, performance vari
 A similar pattern can be seen in the kernel responsible for identifying the start and end indices of occupied grid cells.
 
 <p align="center">
-  <img src="graphs/scattered/identify_cells_ms" alt="Performance for scattered identifying start and ends" width="500">
+  <img src="graphs/scattered/identify_cells_ms.png" alt="Performance for scattered identifying start and ends" width="500">
 </p>
 
 These trends were also present in the coherent implementation.
 
 <p align="center">
-  <img src="graphs/coherent/identify_cells_ms" alt="Performance for coherent computing indices" width="500">
+  <img src="graphs/coherent/compute_indices_ms.png" alt="Performance for coherent computing indices" width="500">
 </p>
 
 <p align="center">
-  <img src="graphs/coherent/identify_cells_ms" alt="Performance for coherent identifying start and ends" width="500">
+  <img src="graphs/coherent/identify_cells_ms.png" alt="Performance for coherent identifying start and ends" width="500">
 </p>
 
 Another notable result appeared in the coherent implementation's position and velocity update kernels. In both cases, a block size of 32 resulted in the highest execution time.
@@ -111,13 +111,13 @@ Another notable result appeared in the coherent implementation's position and ve
 </p>
 
 <p align="center">
-  <img src="graphs/coherent/position_update_ms" width="500">
+  <img src="graphs/coherent/position_update_ms.png" width="500">
 </p>
 
 The scattered implementation showed less variation in these kernels. Position-update performance remained relatively similar across block dimensions, while the velocity-update kernel showed a small decrease in execution time for some of the block size of 32.
 
 <p align="center">
-  <img src="graphs/scattered/velocity_update_ms" width="500">
+  <img src="graphs/scattered/velocity_update_ms.png" width="500">
 </p>
 
 ## Reasoning for our results
