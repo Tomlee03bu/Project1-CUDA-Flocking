@@ -22,9 +22,8 @@ The naive implementation performs a brute-force neighbor search. For every boid,
 
 The scattered uniform-grid implementation accelerates neighbor searching by dividing the simulation space into a 3D grid. Each boid is assigned to a grid cell based on its position, and the boids are sorted by their grid-cell index. Start and end indices are then recorded for each occupied cell so that, during the velocity update, a boid only needs to search the nearby grid cells that could contain relevant neighbors rather than checking every boid in the simulation.
 
-![]()
 <p align="center">
-  <img src="images/Boids%20Ugrids%20buffers%20naive.png" alt="buffers for generating a uniform grid using index sort" width="800">
+  <img src="images/Boids%20Ugrids%20buffers%20naive.png" alt="buffers for generating a uniform grid using index sort" width="500">
 </p>
 
 Although the boids are sorted by grid-cell index, the actual position and velocity arrays are not reordered. Instead, the sorted array stores indices that point back into the original position and velocity arrays. As a result, neighboring boids in the grid may still be located far apart in memory, so accessing them during the velocity update can involve scattered memory accesses.
