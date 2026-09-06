@@ -8,8 +8,6 @@ Thomas Lee
 
 ![Boids Demo](images/BoidDemo.gif)
 
-<img src="images/BoidDemo.gif" alt="Boids Demo" width="800">
-
 ## Introduction
 
 This project implements and compares several CUDA-based approaches for simulating a flock of boids. Each boid follows the standard flocking rules of cohesion, separation, and alignment, where its velocity is updated based on nearby boids and its position is then advanced using the updated velocity. The main goal of the project is to explore how different GPU data structures and memory-access patterns affect the performance of the simulation as the number of boids and CUDA launch configuration change.
