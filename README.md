@@ -1,11 +1,14 @@
 **University of Pennsylvania, CIS 5650: GPU Programming and Architecture,
 Project 1 - Flocking**
 
-* (TODO) Thomas Lee
-  * (TODO) [https://www.linkedin.com/in/thomas-lee-6353b5253/](), [https://thomaslee03-github-io.vercel.app/](), [twitter](), etc.
-* Tested on: (TODO) Windows 11, AMD Ryzen 9 7845HX @ 3.00 GHz, 64GB RAM, NVIDIA GeForce RTX 4070 Laptop GPU 8GB. Personal laptop. 
+Thomas Lee
+[https://www.linkedin.com/in/thomas-lee-6353b5253/](), [https://thomaslee03-github-io.vercel.app/]()
+
+* Tested on: Windows 11, AMD Ryzen 9 7845HX @ 3.00 GHz, 64GB RAM, NVIDIA GeForce RTX 4070 Laptop GPU 8GB. Personal laptop. 
 
 ![Boids Demo](images/BoidDemo.gif)
+
+<img src="images/BoidDemo.gif" alt="Boids Demo" width="800">
 
 ## Introduction
 
