@@ -9,4 +9,7 @@ namespace Boids {
 
     void endSimulation();
     void unitTest();
+    void printBenchmark();
+
+    extern bool collectingBenchmarkData;
 }

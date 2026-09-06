@@ -23,12 +23,12 @@
 
 // LOOK-2.1 LOOK-2.3 - toggles for UNIFORM_GRID and COHERENT_GRID
 #define VISUALIZE 1
-#define UNIFORM_GRID 0
-#define COHERENT_GRID 0
+#define UNIFORM_GRID 1
+#define COHERENT_GRID 1
 
 // LOOK-1.2 - change this to adjust particle count in the simulation
-const int N_FOR_VIS = 5000;
-const float DT = 0.2f;
+const int N_FOR_VIS = 10000;
+const float DT = .2f;
 
 /**
 * C main function.
@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 }
+
 
 //-------------------------------
 //---------RUNTIME STUFF---------
@@ -225,46 +226,91 @@ void initShaders(GLuint * program) {
     double fps = 0;
     double timebase = 0;
     int frame = 0;
+    int currentframe = 0;
+    int measuredFrames = 0;
 
     Boids::unitTest(); // LOOK-1.2 We run some basic example code to make sure
                        // your CUDA development setup is ready to go.
 
+    double total_CUDA_ms = 0;
+
+    cudaEvent_t start, stop;
+
+    cudaEventCreate(&start);
+    cudaEventCreate(&stop);
+
     while (!glfwWindowShouldClose(window)) {
       glfwPollEvents();
-
+      currentframe++;
+     
       frame++;
       double time = glfwGetTime();
 
       if (time - timebase > 1.0) {
         fps = frame / (time - timebase);
         timebase = time;
-        frame = 0;
+        frame = 0;        
       }
+
+      Boids::collectingBenchmarkData = (currentframe > 100);
+
+      // Record the start event
+      cudaEventRecord(start, 0);
 
       runCUDA();
 
+      // Record the stop event
+      cudaEventRecord(stop, 0);
+
+      // Wait for the stop event to complete
+      cudaEventSynchronize(stop);
+
+      //ignoring "warmup" frames
+      if (Boids::collectingBenchmarkData) {
+          measuredFrames++;
+          float milliseconds = 0;
+          cudaEventElapsedTime(&milliseconds, start, stop);
+          total_CUDA_ms += milliseconds;
+      }
+
+      //terminate after 1000 frames
+     /*if (measuredFrames >= 1000) {
+          break;
+      }*/
       std::ostringstream ss;
       ss << "[";
       ss.precision(1);
       ss << std::fixed << fps;
       ss << " fps] " << deviceName;
+
       glfwSetWindowTitle(window, ss.str().c_str());
 
       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
       #if VISUALIZE
-      glUseProgram(program[PROG_BOID]);
-      glBindVertexArray(boidVAO);
-      glPointSize((GLfloat)pointSize);
-      glDrawElements(GL_POINTS, N_FOR_VIS + 1, GL_UNSIGNED_INT, 0);
-      glPointSize(1.0f);
+          glUseProgram(program[PROG_BOID]);
+          glBindVertexArray(boidVAO);
+          glPointSize((GLfloat)pointSize);
+          glDrawElements(GL_POINTS, N_FOR_VIS + 1, GL_UNSIGNED_INT, 0);
+          glPointSize(1.0f);
 
-      glUseProgram(0);
-      glBindVertexArray(0);
+          glUseProgram(0);
+          glBindVertexArray(0);
 
-      glfwSwapBuffers(window);
+          glfwSwapBuffers(window);
       #endif
+
     }
+    cudaEventDestroy(start);
+    cudaEventDestroy(stop);
+    double avgCudaMs = total_CUDA_ms / measuredFrames;
+    double avgCudaFPS = 1000.0 / avgCudaMs;
+
+    printf("Average CUDA simulation time: %f ms\n", avgCudaMs);
+    printf("Average CUDA FPS: %f\n", avgCudaFPS);
+
+    Boids::printBenchmark();
+
     glfwDestroyWindow(window);
     glfwTerminate();
   }
