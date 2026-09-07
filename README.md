@@ -120,6 +120,18 @@ The scattered implementation showed less variation in these kernels. Position-up
   <img src="graphs/scattered/velocity_update_ms.png" width="500">
 </p>
 
+**Effect of Cell Width and Neighbor Cell Count**
+
+We also compared two uniform-grid configurations using a block size of 64. In the original configuration, the grid cell width was twice the maximum neighborhood distance, requiring each boid to search up to 8 neighboring cells. We then reduced the cell width to the neighborhood distance, which required searching up to 27 neighboring cells.
+
+<p align="center">
+  <img src="images/Comparison.png" alt="Uniform grid cell width comparison" width="600">
+</p>
+
+The results show that checking 27 cells did not necessarily reduce performance. At lower particle counts, the two approaches performed similarly, with the 8-cell configuration performing noticeably better at 50,000 boids. However, as the particle count increased, the 27-cell configuration began to outperform the 8-cell configuration, with the difference becoming especially noticeable at 500,000 and 1,000,000 boids.
+
+This indicates that the number of grid cells searched alone does not determine performance.
+
 ## Reasoning for our results
 
 **Naive vs. Uniform Grid**
@@ -135,3 +147,9 @@ The coherent implementation performed better than the scattered implementation m
 Changing the block dimension changes how threads are grouped and scheduled on the GPU. In our implementation, changing the block size also changes the number of blocks launched. We observed that block size 32 often resulted in slower kernel execution, especially for the coherent implementation, while larger block sizes generally performed better.
 
 However, increasing block size did not always continue to improve performance. This is because GPU performance depends on balancing the number of threads per block with the number of blocks that can run in parallel. This also explains why some individual kernels showed noticeable timing differences while the overall FPS changed only slightly.
+
+**Effect of Cell Width**
+
+Although the smaller cell width requires checking up to 27 cells instead of 8, each cell covers a smaller volume and therefore tends to contain fewer boids. With the larger cells, fewer cells need to be visited, but each cell can contain more particles that must be examined and distance-tested.
+
+At larger particle counts, the cost of checking additional particles within the larger 8-cell configuration appears to outweigh the overhead of visiting more, smaller cells. This likely explains why the 27-cell configuration performed better at higher particle counts despite requiring more neighboring-cell lookups.
