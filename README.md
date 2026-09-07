@@ -128,7 +128,7 @@ We also compared two uniform-grid configurations using a block size of 64. In th
   <img src="images/Comparison.png" alt="Uniform grid cell width comparison" width="600">
 </p>
 
-The results show that checking 27 cells did not necessarily reduce performance. At lower particle counts, the two approaches performed similarly, with the 8-cell configuration performing noticeably better at 50,000 boids. However, as the particle count increased, the 27-cell configuration began to outperform the 8-cell configuration, with the difference becoming especially noticeable at 500,000 and 1,000,000 boids.
+The results show that checking 27 cells did not necessarily reduce performance. Overall, we actually noticed that the 8-cell configuration performed worse than the 27-cell configuration (apart from when we had 50,000 boids). 
 
 This indicates that the number of grid cells searched alone does not determine performance.
 
